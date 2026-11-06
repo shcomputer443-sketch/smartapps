@@ -1,12 +1,12 @@
 {
-  "projectId": "app2026-f6184",
-  "appId": "1:308061619877:web:5d3a2aecc87fc878e96f4c",
-  "apiKey": "AIzaSyBhiN-ZcnRYSgFv6uxi99BEyNBMzrM6RMU",
-  "authDomain": "app2026-f6184.firebaseapp.com",
-  "firestoreDatabaseId": "(default)",
-  "storageBucket": "app2026-f6184.firebasestorage.app",
-  "messagingSenderId": "308061619877",
-  "measurementId": "G-3GND3VH2R4",
-  "oAuthClientId": "",
+  "projectId": "smartposapps-bbce6",
+  "appId": "1:309117714823:web:16915ed7b6d93658a49322",
+  "apiKey": "AIzaSyDNRUJpBkoZSDzjTqYMr1hFD_JGWNidDXw",
+  "authDomain": "smartposapps-bbce6.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-smartapps-e56a9c31-51b6-4a72-9fdd-c371a28470be",
+  "storageBucket": "smartposapps-bbce6.firebasestorage.app",
+  "messagingSenderId": "309117714823",
+  "measurementId": "",
+  "oAuthClientId": "309117714823-nfbmeq9str4eb841bkl74m5kt1efesk2.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

@@ -6,7 +6,8 @@ import { LoginPortal } from './components/auth/LoginPortal';
 import { Lock, X, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { getUserEffectiveModules } from './types';
 import { printInvoiceSafely } from './utils/generateInvoicePDF';
-import { SpeedInsights } from '@vercel/speed-insights/react';
+// Platform SDK stub per AI Studio migration guidelines
+const SpeedInsights: React.FC = () => null;
 
 // Lazy load modules for ultra-fast initial page load on Vercel
 const POSModule = React.lazy(() =>
