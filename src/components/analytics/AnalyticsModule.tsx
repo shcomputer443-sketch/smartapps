@@ -501,7 +501,7 @@ export const AnalyticsModule: React.FC = () => {
     });
   };
 
-  const curr = settings.currencySymbol || 'OMR';
+  const curr = settings.currencySymbol || 'BDT';
 
   return (
     <div className="p-4 sm:p-6 pb-28 space-y-6 max-w-7xl mx-auto font-sans text-slate-900 bg-[#FEFAF3]">

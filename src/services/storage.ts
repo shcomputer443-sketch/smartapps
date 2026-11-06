@@ -87,12 +87,16 @@ export const StorageService = {
   getCompanySettings(): CompanySettings {
     const settings = safeGet<CompanySettings>(KEYS.SETTINGS, INITIAL_COMPANY_SETTINGS);
     const deviceId = this.getDeviceId();
-    return {
+    const resolved: CompanySettings = {
       ...INITIAL_COMPANY_SETTINGS,
       ...settings,
       footerTerms: settings.footerTerms?.trim() ? settings.footerTerms : INITIAL_COMPANY_SETTINGS.footerTerms,
       deviceId,
     };
+    if (!resolved.currencySymbol || resolved.currencySymbol === 'OMR') {
+      resolved.currencySymbol = 'BDT';
+    }
+    return resolved;
   },
   saveCompanySettings(settings: CompanySettings): void {
     safeSet(KEYS.SETTINGS, settings);

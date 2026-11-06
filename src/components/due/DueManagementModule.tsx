@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { usePOS } from '../../context/POSContext';
 import { Customer, Invoice, PaymentMethod, CustomerLedgerTransaction } from '../../types';
+import { formatCurrencyAmount } from '../../utils/currencyAndWords';
 import { DueVoucherPrintModal } from './DueVoucherPrintModal';
 import {
   Wallet,
@@ -159,17 +160,17 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
     if (custInvs.length > 1) {
       // If multiple invoices exist, default to Total Due so user can collect up to the total sum of all invoices
       setSelectedInvoiceForPayment(null);
-      setPaymentAmount(effectiveTotalDue > 0 ? Number(effectiveTotalDue.toFixed(3)) : 0);
+      setPaymentAmount(effectiveTotalDue > 0 ? Number(effectiveTotalDue.toFixed(2)) : 0);
       setPaymentReference('ALL-INVOICES');
       setPaymentNotes(`Cash settlement of total due from ${cust.name}`);
     } else if (custInvs.length === 1) {
       setSelectedInvoiceForPayment(custInvs[0]);
-      setPaymentAmount(Number(Number(custInvs[0].dueAmount).toFixed(3)));
+      setPaymentAmount(Number(Number(custInvs[0].dueAmount).toFixed(2)));
       setPaymentReference(`INV-${custInvs[0].id}`);
       setPaymentNotes(`Settlement of Invoice #${custInvs[0].id}`);
     } else {
       setSelectedInvoiceForPayment(null);
-      setPaymentAmount(effectiveTotalDue > 0 ? Number(effectiveTotalDue.toFixed(3)) : 0);
+      setPaymentAmount(effectiveTotalDue > 0 ? Number(effectiveTotalDue.toFixed(2)) : 0);
       setPaymentReference('');
       setPaymentNotes(`Cash settlement of due from ${cust.name}`);
     }
@@ -221,9 +222,9 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
       ? Number(selectedInvoiceForPayment.dueAmount)
       : totalCombinedInvoicesDue;
 
-    if (payNum > maxAllowed + 0.0001) {
+    if (payNum > maxAllowed + 0.001) {
       setPaymentError(
-        `Payment amount cannot exceed total due of ${settings.currencySymbol}${maxAllowed.toFixed(3)}.`
+        `Payment amount cannot exceed total due of ${settings.currencySymbol} ${formatCurrencyAmount(maxAllowed)}.`
       );
       return;
     }
@@ -247,7 +248,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
       paymentMethod,
       paymentReference || 'COUNTER-CASH',
       paymentNotes,
-      `Due payment received: ${settings.currencySymbol}${payNum.toLocaleString()} from ${selectedCustForPayment.name} via ${paymentMethod}`,
+      `Due payment received: ${settings.currencySymbol} ${formatCurrencyAmount(payNum)} from ${selectedCustForPayment.name} via ${paymentMethod}`,
       selectedInvoiceForPayment ? selectedInvoiceForPayment.id : undefined
     );
 
@@ -255,7 +256,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
       setSelectedCustForPayment(null);
       setSelectedInvoiceForPayment(null);
       setToastMessage(
-        `Successfully collected ${settings.currencySymbol}${payNum.toLocaleString()} from ${selectedCustForPayment.name}!`
+        `Successfully collected ${settings.currencySymbol} ${formatCurrencyAmount(payNum)} from ${selectedCustForPayment.name}!`
       );
       setActiveVoucher(tx);
       setTimeout(() => setToastMessage(null), 4000);
@@ -329,7 +330,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
         <div className="p-5 rounded-3xl bg-white border border-[#EADBCE] shadow-xs space-y-1">
           <span className="text-xs font-bold text-rose-700 block">Total Outstanding Receivables</span>
           <div className="text-2xl sm:text-3xl font-extrabold text-rose-600 font-mono tabular-nums">
-            {settings.currencySymbol}{totalReceivableDue.toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(totalReceivableDue)}
           </div>
           <span className="text-[11px] text-slate-500 block">
             Across {activeDueCustomers.length} customer accounts with due balances
@@ -426,10 +427,10 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                       <span className="text-[10px] text-slate-500">{c.address}</span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-slate-500 tabular-nums">
-                      {settings.currencySymbol}{c.totalPurchases.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(c.totalPurchases)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-extrabold text-rose-600 text-sm tabular-nums">
-                      {settings.currencySymbol}{getCustomerEffectiveDue(c).toFixed(3)}
+                      {settings.currencySymbol} {formatCurrencyAmount(getCustomerEffectiveDue(c))}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <div className="flex items-center justify-center gap-1.5">
@@ -500,10 +501,10 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                       <span className="text-[10px] text-slate-500">{c.address}</span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-slate-600 tabular-nums">
-                      {settings.currencySymbol}{c.totalPurchases.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(c.totalPurchases)}
                     </td>
                     <td className={`py-3 px-4 text-right font-mono font-extrabold tabular-nums text-sm ${c.currentDue > 0 ? 'text-rose-600' : 'text-emerald-700'}`}>
-                      {settings.currencySymbol}{c.currentDue.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(c.currentDue)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <div className="flex items-center justify-center gap-1.5">
@@ -575,13 +576,13 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                       <span className="text-[10px] text-slate-400 font-mono">{inv.customerPhone}</span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-slate-700 tabular-nums">
-                      {settings.currencySymbol}{inv.grandTotal.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(inv.grandTotal)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-emerald-700 tabular-nums">
-                      {settings.currencySymbol}{inv.totalPaid.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(inv.totalPaid)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 tabular-nums text-sm">
-                      {settings.currencySymbol}{inv.dueAmount.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(inv.dueAmount)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <div className="flex items-center justify-center gap-1.5">
@@ -650,7 +651,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-extrabold text-slate-900 tabular-nums">
-                      {settings.currencySymbol}{tx.amount.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(tx.amount)}
                     </td>
                     <td className="py-3 px-4 text-slate-600 max-w-xs truncate" title={tx.explanation}>
                       {tx.explanation}
@@ -731,7 +732,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                   {selectedInvoiceForPayment ? 'Invoice Due:' : 'Current Total Due:'}
                 </span>
                 <span className="text-base font-extrabold text-rose-600 font-mono">
-                  {settings.currencySymbol}{Number(currentModalMax).toFixed(3)}
+                  {settings.currencySymbol} {formatCurrencyAmount(currentModalMax)}
                 </span>
               </div>
             </div>
@@ -751,7 +752,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                         key={inv.id}
                         onClick={() => {
                           setSelectedInvoiceForPayment(inv);
-                          setPaymentAmount(Number(Number(inv.dueAmount).toFixed(3)));
+                          setPaymentAmount(Number(Number(inv.dueAmount).toFixed(2)));
                           setPaymentReference(`INV-${inv.id}`);
                           setPaymentNotes(`Settlement of Invoice #${inv.id}`);
                         }}
@@ -775,7 +776,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
 
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="font-mono font-extrabold text-rose-600">
-                            {settings.currencySymbol}{Number(inv.dueAmount).toFixed(3)}
+                            {settings.currencySymbol} {formatCurrencyAmount(inv.dueAmount)}
                           </span>
 
                           <button
@@ -799,7 +800,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                   <div
                     onClick={() => {
                       setSelectedInvoiceForPayment(null);
-                      setPaymentAmount(Number(totalCombinedInvoicesDue.toFixed(3)));
+                      setPaymentAmount(Number(totalCombinedInvoicesDue.toFixed(2)));
                       setPaymentReference('ALL-INVOICES');
                       setPaymentNotes(`Settlement of all due invoices for ${selectedCustForPayment.name}`);
                     }}
@@ -820,14 +821,14 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                           Total Due
                         </span>
                         <span className="text-[10px] text-slate-500 block">
-                          Collect any amount up to total combined due ({settings.currencySymbol}{Number(totalCombinedInvoicesDue).toFixed(3)})
+                          Collect any amount up to total combined due ({settings.currencySymbol} {formatCurrencyAmount(totalCombinedInvoicesDue)})
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
                       <span className="text-[10px] text-slate-500 block font-sans">Total Due:</span>
                       <span className="font-mono font-black text-rose-700 text-sm">
-                        {settings.currencySymbol}{Number(totalCombinedInvoicesDue).toFixed(3)}
+                        {settings.currencySymbol} {formatCurrencyAmount(totalCombinedInvoicesDue)}
                       </span>
                     </div>
                   </div>
@@ -845,12 +846,12 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
             <form onSubmit={handleSubmitDuePayment} className="space-y-3.5 text-xs">
               <div>
                 <label className="text-slate-700 font-bold block mb-1.5">
-                  Received Amount ({settings.currencySymbol}) * (Max: {settings.currencySymbol}{Number(currentModalMax).toFixed(3)})
+                  Received Amount ({settings.currencySymbol}) * (Max: {settings.currencySymbol} {formatCurrencyAmount(currentModalMax)})
                 </label>
                 <input
                   type="number"
-                  min="0.001"
-                  step="0.001"
+                  min="0.01"
+                  step="0.01"
                   required
                   autoFocus
                   value={paymentAmount || ''}
@@ -859,7 +860,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                     if (isNaN(val)) {
                       setPaymentAmount(0);
                     } else {
-                      const rounded = Math.round(val * 1000) / 1000;
+                      const rounded = Math.round(val * 100) / 100;
                       setPaymentAmount(rounded);
                     }
                   }}
@@ -868,8 +869,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                 <div className="flex justify-between items-center text-[11px] text-slate-500 mt-1">
                   <span>Balance After Payment:</span>
                   <strong className="font-mono text-slate-800">
-                    {settings.currencySymbol}
-                    {Math.max(0, currentModalMax - (paymentAmount || 0)).toFixed(3)}
+                    {settings.currencySymbol} {formatCurrencyAmount(Math.max(0, currentModalMax - (paymentAmount || 0)))}
                   </strong>
                 </div>
               </div>
@@ -927,7 +927,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
                   disabled={paymentAmount <= 0}
                   className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md cursor-pointer transition-colors disabled:opacity-50"
                 >
-                  Collect {settings.currencySymbol}{paymentAmount.toLocaleString()}
+                  Collect {settings.currencySymbol} {formatCurrencyAmount(paymentAmount)}
                 </button>
               </div>
             </form>
@@ -1018,8 +1018,7 @@ export const DueManagementModule: React.FC<DueManagementModuleProps> = ({ onNavi
               Are you sure you want to delete customer <strong>{customerToDelete.name}</strong>?
               {customerToDelete.currentDue > 0 && (
                 <span className="text-rose-600 block mt-1 font-bold">
-                  Warning: Customer has outstanding due of {settings.currencySymbol}
-                  {customerToDelete.currentDue.toLocaleString()}!
+                  Warning: Customer has outstanding due of {settings.currencySymbol} {formatCurrencyAmount(customerToDelete.currentDue)}!
                 </span>
               )}
             </p>

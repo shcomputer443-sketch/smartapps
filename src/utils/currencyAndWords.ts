@@ -1,10 +1,10 @@
 export function formatCurrencyAmount(amount: number): string {
   if (isNaN(amount) || amount === null || amount === undefined) {
-    return '0.000';
+    return '0.00';
   }
-  return amount.toLocaleString('en-US', {
-    minimumFractionDigits: 3,
-    maximumFractionDigits: 3,
+  return Number(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
 }
 
@@ -25,10 +25,10 @@ function convertLessThanThousand(n: number): string {
   return units[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' and ' + convertLessThanThousand(n % 100) : '');
 }
 
-export function numberToWords(amount: number, currencyName: string = 'OMR'): string {
+export function numberToWords(amount: number, currencyName: string = 'BDT'): string {
   if (isNaN(amount) || amount <= 0) return 'Zero ' + currencyName + ' Only';
 
-  const fixed = Math.abs(amount).toFixed(3);
+  const fixed = Math.abs(amount).toFixed(2);
   const parts = fixed.split('.');
   const wholePart = parseInt(parts[0], 10);
   const fracPart = parseInt(parts[1], 10);
@@ -68,8 +68,13 @@ export function numberToWords(amount: number, currencyName: string = 'OMR'): str
 
   if (fracPart > 0) {
     const fracStr = convertLessThanThousand(fracPart);
-    const baisaName = currencyName === 'OMR' ? 'Baisa' : 'Cents';
-    result += ` and ${fracStr} ${baisaName}`;
+    const subUnitName =
+      currencyName === 'BDT' || currencyName === 'Tk' || currencyName === '৳'
+        ? 'Paisa'
+        : currencyName === 'OMR'
+        ? 'Baisa'
+        : 'Cents';
+    result += ` and ${fracStr} ${subUnitName}`;
   }
 
   result += ' Only';

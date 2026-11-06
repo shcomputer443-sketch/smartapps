@@ -495,6 +495,23 @@ export const AdminSettingsModule: React.FC = () => {
                 </div>
               </div>
 
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Currency Symbol / Code *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. BDT, ৳, Tk"
+                  value={formSettings.currencySymbol || 'BDT'}
+                  onChange={(e) => setFormSettings({ ...formSettings, currencySymbol: e.target.value.trim() || 'BDT' })}
+                  className="w-full px-3 py-2 text-xs font-bold font-mono rounded-xl bg-[#FEFAF3] border border-slate-300 text-slate-900 focus:bg-white focus:outline-none focus:border-[#C49A45]"
+                />
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Bangladeshi Taka standard: <strong>BDT</strong> or <strong>৳</strong>
+                </span>
+              </div>
+
               <div className="sm:col-span-2">
                 <label className="text-xs font-bold text-slate-700 block mb-1">
                   Yard / Warehouse Physical Address *

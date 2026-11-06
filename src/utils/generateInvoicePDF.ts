@@ -150,21 +150,21 @@ export function downloadInvoicePDF(
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       doc.text('Gross Total:', 4, y);
-      doc.text(`${invoice.subtotal.toLocaleString()} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
+      doc.text(`${formatCurrencyAmount(invoice.subtotal)} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
       y += 4;
       doc.text('Discount:', 4, y);
-      doc.text(`-${invoice.discountAmount.toLocaleString()} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
+      doc.text(`-${formatCurrencyAmount(invoice.discountAmount)} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
       y += 4;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.text('Grand Total:', 4, y);
-      doc.text(`${invoice.grandTotal.toLocaleString()} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
+      doc.text(`${formatCurrencyAmount(invoice.grandTotal)} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
       y += 4.5;
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(22, 163, 74);
       doc.text('Amount Paid:', 4, y);
-      doc.text(`${invoice.totalPaid.toLocaleString()} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
+      doc.text(`${formatCurrencyAmount(invoice.totalPaid)} ${settings.currencySymbol}`, pageWidth - 4, y, { align: 'right' });
       doc.setTextColor(0, 0, 0);
       y += 4;
       doc.setFont('helvetica', 'bold');
@@ -172,8 +172,8 @@ export function downloadInvoicePDF(
       doc.text('Remaining Due:', 4, y);
       doc.text(
         invoice.dueAmount > 0
-          ? `${invoice.dueAmount.toLocaleString()} ${settings.currencySymbol}`
-          : `0 ${settings.currencySymbol} (PAID)`,
+          ? `${formatCurrencyAmount(invoice.dueAmount)} ${settings.currencySymbol}`
+          : `0.00 ${settings.currencySymbol} (PAID)`,
         pageWidth - 4,
         y,
         { align: 'right' }
@@ -306,8 +306,8 @@ export function downloadInvoicePDF(
         cleanItemName(it.productName),
         it.sku,
         `${it.quantity} ${it.unit}`,
-        `${it.unitPrice.toLocaleString()}`,
-        `${it.total.toLocaleString()}`,
+        `${formatCurrencyAmount(it.unitPrice)}`,
+        `${formatCurrencyAmount(it.total)}`,
       ]);
 
       autoTableFunc(doc, {
@@ -331,7 +331,7 @@ export function downloadInvoicePDF(
       y = ((doc as any).lastAutoTable?.finalY || y) + 6;
 
       const summaryStartX = pageWidth - 90;
-      const curr = settings.currencySymbol || 'OMR';
+      const curr = settings.currencySymbol || 'BDT';
       const vatPct = settings.vatPercent ?? 5;
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
@@ -441,8 +441,8 @@ export function generateInvoiceHTML(
         ${!isThermal ? `<div style="font-size: 11px; color: #64748b;">SKU: ${it.sku}</div>` : ''}
       </td>
       <td style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">${it.quantity} ${it.unit}</td>
-      <td style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">${settings.currencySymbol}${it.unitPrice.toLocaleString()}</td>
-      <td style="border: 1px solid #cbd5e1; padding: 6px; text-align: right; font-weight: bold;">${settings.currencySymbol}${it.total.toLocaleString()}</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px; text-align: right;">${settings.currencySymbol} ${formatCurrencyAmount(it.unitPrice)}</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px; text-align: right; font-weight: bold;">${settings.currencySymbol} ${formatCurrencyAmount(it.total)}</td>
     </tr>
   `
     )
@@ -627,7 +627,7 @@ export function generateInvoiceHTML(
           Remaining Due:
         </td>
         <td style="text-align: right; font-weight: bold; color: ${invoice.dueAmount > 0 ? '#e11d48' : '#16a34a'}; white-space: nowrap;">
-          ${invoice.dueAmount > 0 ? `${settings.currencySymbol} ${formatCurrencyAmount(invoice.dueAmount)}` : `${settings.currencySymbol} 0.000`}
+          ${invoice.dueAmount > 0 ? `${settings.currencySymbol} ${formatCurrencyAmount(invoice.dueAmount)}` : `${settings.currencySymbol} 0.00`}
         </td>
       </tr>
     </table>
@@ -749,9 +749,9 @@ export function printDailyReportSafely(data: DailyReportPrintParams) {
       <tr style="border-bottom: 1px solid #e2e8f0;">
         <td style="padding: 6px 8px; font-family: monospace; font-weight: bold;">${inv.id}</td>
         <td style="padding: 6px 8px;">${inv.customerName}</td>
-        <td style="padding: 6px 8px; text-align: right; font-family: monospace; font-weight: bold; white-space: nowrap;">${data.settings.currencySymbol} ${inv.grandTotal.toLocaleString()}</td>
-        <td style="padding: 6px 8px; text-align: right; font-family: monospace; color: #16a34a; white-space: nowrap;">${data.settings.currencySymbol} ${inv.totalPaid.toLocaleString()}</td>
-        <td style="padding: 6px 8px; text-align: right; font-family: monospace; color: ${inv.dueAmount > 0 ? '#e11d48' : '#64748b'}; font-weight: bold; white-space: nowrap;">${data.settings.currencySymbol} ${inv.dueAmount.toLocaleString()}</td>
+        <td style="padding: 6px 8px; text-align: right; font-family: monospace; font-weight: bold; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(inv.grandTotal)}</td>
+        <td style="padding: 6px 8px; text-align: right; font-family: monospace; color: #16a34a; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(inv.totalPaid)}</td>
+        <td style="padding: 6px 8px; text-align: right; font-family: monospace; color: ${inv.dueAmount > 0 ? '#e11d48' : '#64748b'}; font-weight: bold; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(inv.dueAmount)}</td>
       </tr>
     `).join('');
 
@@ -760,13 +760,13 @@ export function printDailyReportSafely(data: DailyReportPrintParams) {
         <td style="padding: 6px 8px; font-weight: 600;">${exp.category}</td>
         <td style="padding: 6px 8px;">${exp.description}</td>
         <td style="padding: 6px 8px; text-transform: capitalize; color: #64748b;">${exp.paidVia}</td>
-        <td style="padding: 6px 8px; text-align: right; font-family: monospace; color: #e11d48; font-weight: bold; white-space: nowrap;">${data.settings.currencySymbol} ${exp.amount.toLocaleString()}</td>
+        <td style="padding: 6px 8px; text-align: right; font-family: monospace; color: #e11d48; font-weight: bold; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(exp.amount)}</td>
       </tr>
     `).join('');
 
     const withdrawalRows = (data.withdrawals || []).map((wth) => `
       <tr style="border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 6px 8px; font-weight: bold; color: #991b1b;">${data.settings.currencySymbol} ${wth.amount.toLocaleString()}</td>
+        <td style="padding: 6px 8px; font-weight: bold; color: #991b1b;">${data.settings.currencySymbol} ${formatCurrencyAmount(wth.amount)}</td>
         <td style="padding: 6px 8px; font-weight: 600;">${wth.withdrawnBy}</td>
         <td style="padding: 6px 8px; color: #475569;">${wth.purpose || 'Owner Draw / Bank'}</td>
         <td style="padding: 6px 8px; color: #64748b;">${wth.note || '-'}</td>
@@ -810,49 +810,49 @@ export function printDailyReportSafely(data: DailyReportPrintParams) {
   <div class="kpi-grid">
     <div class="kpi-card">
       <div style="font-size: 10px; color: #166534; font-weight: bold; text-transform: uppercase;">Total Day Revenue</div>
-      <div style="font-size: 18px; font-weight: 800; color: #16a34a; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${data.dayNetIncome.toLocaleString()}</div>
-      <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Gross: ${data.settings.currencySymbol}${data.dayGrossSales.toLocaleString()} | Returns: -${data.settings.currencySymbol}${data.dayReturnsTotal.toLocaleString()}</div>
+      <div style="font-size: 18px; font-weight: 800; color: #16a34a; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayNetIncome)}</div>
+      <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Gross: ${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayGrossSales)} | Returns: -${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayReturnsTotal)}</div>
       <div style="font-size: 9.5px; color: #047857; margin-top: 4px; border-top: 1px solid #cbd5e1; padding-top: 3px;">
-        Cash: <strong>${data.settings.currencySymbol} ${(data.dayCashRevenue ?? data.dayTotalPaidCash).toLocaleString()}</strong> &middot; 
-        Bank Transfer: <strong>${data.settings.currencySymbol} ${(data.dayBankTransferRevenue ?? 0).toLocaleString()}</strong>
-        ${(data.dayMobileRevenue && data.dayMobileRevenue > 0) ? ` &middot; Mobile: <strong>${data.settings.currencySymbol} ${data.dayMobileRevenue.toLocaleString()}</strong>` : ''}
+        Cash: <strong>${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayCashRevenue ?? data.dayTotalPaidCash)}</strong> &middot; 
+        Bank Transfer: <strong>${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayBankTransferRevenue ?? 0)}</strong>
+        ${(data.dayMobileRevenue && data.dayMobileRevenue > 0) ? ` &middot; Mobile: <strong>${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayMobileRevenue)}</strong>` : ''}
       </div>
     </div>
     <div class="kpi-card">
       <div style="font-size: 10px; color: #991b1b; font-weight: bold; text-transform: uppercase;">Total Day Expenses</div>
-      <div style="font-size: 18px; font-weight: 800; color: #e11d48; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${data.dayTotalExpense.toLocaleString()}</div>
+      <div style="font-size: 18px; font-weight: 800; color: #e11d48; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayTotalExpense)}</div>
       <div style="font-size: 10px; color: #64748b;">${data.expenses.length} operating vouchers</div>
     </div>
     <div class="kpi-card">
       <div style="font-size: 10px; color: #0f172a; font-weight: bold; text-transform: uppercase;">Day Net Profit</div>
-      <div style="font-size: 18px; font-weight: 800; color: ${data.dayNetProfit >= 0 ? '#b45309' : '#e11d48'}; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${data.dayNetProfit.toLocaleString()}</div>
-      <div style="font-size: 10px; color: #64748b;">Margin: ${data.settings.currencySymbol}${data.dayGrossProfit.toLocaleString()} - Exp: ${data.settings.currencySymbol}${data.dayTotalExpense.toLocaleString()}</div>
+      <div style="font-size: 18px; font-weight: 800; color: ${data.dayNetProfit >= 0 ? '#b45309' : '#e11d48'}; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayNetProfit)}</div>
+      <div style="font-size: 10px; color: #64748b;">Margin: ${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayGrossProfit)} - Exp: ${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayTotalExpense)}</div>
     </div>
   </div>
 
   <div class="cash-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px;">
     <div>
       <div style="font-size: 9px; color: #92400e; font-weight: bold; text-transform: uppercase;">Opening Capital</div>
-      <div style="font-size: 13px; font-weight: 800; color: #b45309; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${data.openingCashBalance.toLocaleString()}</div>
+      <div style="font-size: 13px; font-weight: 800; color: #b45309; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(data.openingCashBalance)}</div>
     </div>
     <div>
       <div style="font-size: 9px; color: #166534; font-weight: bold; text-transform: uppercase;">Cash Inflow Today</div>
-      <div style="font-size: 13px; font-weight: 800; color: #16a34a; font-family: monospace; white-space: nowrap;">+${data.settings.currencySymbol} ${(data.dayTotalPaidCash + data.dayDuesCollectedCash).toLocaleString()}</div>
+      <div style="font-size: 13px; font-weight: 800; color: #16a34a; font-family: monospace; white-space: nowrap;">+${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayTotalPaidCash + data.dayDuesCollectedCash)}</div>
       <div style="font-size: 8px; color: #64748b;">Sales & dues</div>
     </div>
     <div>
       <div style="font-size: 9px; color: #991b1b; font-weight: bold; text-transform: uppercase;">Cash Outflow Today</div>
-      <div style="font-size: 13px; font-weight: 800; color: #e11d48; font-family: monospace; white-space: nowrap;">-${data.settings.currencySymbol} ${(data.dayCashExpenses + data.dayCashRefunds).toLocaleString()}</div>
+      <div style="font-size: 13px; font-weight: 800; color: #e11d48; font-family: monospace; white-space: nowrap;">-${data.settings.currencySymbol} ${formatCurrencyAmount(data.dayCashExpenses + data.dayCashRefunds)}</div>
       <div style="font-size: 8px; color: #64748b;">Expenses & refunds</div>
     </div>
     <div>
       <div style="font-size: 9px; color: #991b1b; font-weight: bold; text-transform: uppercase;">Cash Withdrawn</div>
-      <div style="font-size: 13px; font-weight: 800; color: #b91c1c; font-family: monospace; white-space: nowrap;">-${data.settings.currencySymbol} ${(data.cashWithdrawnToday || 0).toLocaleString()}</div>
+      <div style="font-size: 13px; font-weight: 800; color: #b91c1c; font-family: monospace; white-space: nowrap;">-${data.settings.currencySymbol} ${formatCurrencyAmount(data.cashWithdrawnToday || 0)}</div>
       <div style="font-size: 8px; color: #64748b;">Daily owner draw</div>
     </div>
     <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 4px 6px;">
       <div style="font-size: 9px; color: #15803d; font-weight: bold; text-transform: uppercase;">Remaining Balance</div>
-      <div style="font-size: 14px; font-weight: 800; color: #15803d; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${(data.remainingCashBalance !== undefined ? data.remainingCashBalance : data.estimatedClosingCash).toLocaleString()}</div>
+      <div style="font-size: 14px; font-weight: 800; color: #15803d; font-family: monospace; white-space: nowrap;">${data.settings.currencySymbol} ${formatCurrencyAmount(data.remainingCashBalance !== undefined ? data.remainingCashBalance : data.estimatedClosingCash)}</div>
       <div style="font-size: 8px; color: #166534;">In safe/drawer</div>
     </div>
   </div>
@@ -977,7 +977,7 @@ export function printMonthlyReportSafely(data: MonthlyReportPrintParams) {
     iframe.style.border = '0';
     document.body.appendChild(iframe);
 
-    const curr = data.settings.currencySymbol || 'OMR';
+    const curr = data.settings.currencySymbol || 'BDT';
     const monthRows = data.monthlyBreakdown.map((m) => `
       <tr style="border-bottom: 1px solid #e2e8f0;">
         <td style="padding: 7px 9px; font-weight: bold; color: #1e293b;">${m.monthLabel}</td>
@@ -1151,7 +1151,7 @@ export function printBestProductReportSafely(data: {
   };
 }): void {
   try {
-    const curr = data.settings.currencySymbol || 'OMR';
+    const curr = data.settings.currencySymbol || 'BDT';
     let iframe = document.getElementById('report-print-iframe') as HTMLIFrameElement;
     if (!iframe) {
       iframe = document.createElement('iframe');

@@ -20,7 +20,7 @@ export const INITIAL_COMPANY_SETTINGS: CompanySettings = {
   address: 'Demra Highway, Main Market, Dhaka',
   phone: '+880 1700-000000',
   email: 'admin@allnoor.com',
-  currencySymbol: 'OMR',
+  currencySymbol: 'BDT',
   footerTerms:
     '1. Sold goods in sound condition can be returned subject to presentation of delivery slip.\n2. Cement & dry mortars must be stored in moisture-free conditions.\n3. Please settle credit dues within the agreed credit term period.\n4. Preserve this computerized invoice for warranty and accounting verification.',
   minMarginPercent: 4.5,

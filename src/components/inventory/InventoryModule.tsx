@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { usePOS } from '../../context/POSContext';
 import { Product, MaterialUnit, StockAdjustment } from '../../types';
 import { printProductSticker, downloadStickerHTML } from '../../utils/printProductSticker';
-import { cleanItemName } from '../../utils/currencyAndWords';
+import { cleanItemName, formatCurrencyAmount } from '../../utils/currencyAndWords';
 import {
   Boxes,
   Plus,
@@ -420,15 +420,15 @@ export const InventoryModule: React.FC = () => {
                     <td className="py-3 px-4 font-medium text-slate-800">{prod.category}</td>
                     {currentRole.permissions.canViewPurchasePrice && (
                       <td className="py-3 px-4 text-right font-mono text-slate-500 tabular-nums">
-                        {settings.currencySymbol}{prod.costPrice.toLocaleString()}
+                        {settings.currencySymbol} {formatCurrencyAmount(prod.costPrice)}
                       </td>
                     )}
                     <td className="py-3 px-4 text-right font-mono font-bold text-slate-900 tabular-nums">
-                      {settings.currencySymbol}{prod.regularPrice.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(prod.regularPrice)}
                       <span className="text-[10px] text-slate-400 font-normal ml-0.5">/{prod.unit}</span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-rose-700 tabular-nums font-semibold">
-                      {settings.currencySymbol}{prod.minSellingPrice.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(prod.minSellingPrice)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-bold tabular-nums">
                       <span className={isLowStock ? 'text-rose-600 font-extrabold' : 'text-emerald-700'}>
@@ -918,7 +918,7 @@ export const InventoryModule: React.FC = () => {
                               {p.currentStock} {p.unit}
                             </td>
                             <td className="py-1 px-2 text-right font-mono font-bold whitespace-nowrap">
-                              {settings.currencySymbol}{Number(p.regularPrice).toFixed(3)}
+                              {settings.currencySymbol} {formatCurrencyAmount(p.regularPrice)}
                             </td>
                           </tr>
                         );
@@ -1061,7 +1061,7 @@ export const InventoryModule: React.FC = () => {
                               {p.currentStock} {p.unit}
                             </td>
                             <td className="py-1 px-2 text-right font-mono font-bold whitespace-nowrap">
-                              {settings.currencySymbol}{Number(p.regularPrice).toFixed(3)}
+                              {settings.currencySymbol} {formatCurrencyAmount(p.regularPrice)}
                             </td>
                           </tr>
                         );
@@ -1263,7 +1263,7 @@ export const InventoryModule: React.FC = () => {
                   <div className="text-right bg-slate-900 text-white px-2.5 py-1 rounded-lg">
                     <span className="text-[8px] uppercase font-bold block text-amber-300">Selling Price</span>
                     <span className="font-mono font-extrabold text-sm text-yellow-300">
-                      {settings.currencySymbol}{selectedStickerProduct.regularPrice.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(selectedStickerProduct.regularPrice)}
                       {selectedStickerProduct.unit ? <span className="text-[10px] text-slate-300 font-normal">/{selectedStickerProduct.unit}</span> : ''}
                     </span>
                   </div>
@@ -1374,7 +1374,7 @@ export const InventoryModule: React.FC = () => {
                 <div className="bg-slate-900 text-white px-2 py-0.5 rounded flex items-center justify-between">
                   <span className="text-[7px] font-bold">PRICE:</span>
                   <span className="font-mono font-extrabold text-xs text-yellow-300">
-                    {settings.currencySymbol}{selectedStickerProduct.regularPrice.toLocaleString()}
+                    {settings.currencySymbol} {formatCurrencyAmount(selectedStickerProduct.regularPrice)}
                     {selectedStickerProduct.unit ? `/${selectedStickerProduct.unit}` : ''}
                   </span>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { usePOS } from '../../context/POSContext';
 import { Expense, PaymentMethod, Supplier } from '../../types';
+import { formatCurrencyAmount } from '../../utils/currencyAndWords';
 import {
   TrendingDown,
   Plus,
@@ -356,7 +357,7 @@ export const ExpenseModule: React.FC = () => {
             </div>
           </div>
           <div className="text-xl sm:text-2xl font-extrabold text-emerald-700 font-mono tabular-nums">
-            {settings.currencySymbol}{monthlyMetrics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+            {settings.currencySymbol} {formatCurrencyAmount(monthlyMetrics.totalRevenue)}
           </div>
           <span className="text-[10px] text-slate-500 block truncate">
             {selectedMonth === 'all' ? 'Total all-time sales income' : `Sales income in ${selectedMonth}`}
@@ -372,7 +373,7 @@ export const ExpenseModule: React.FC = () => {
             </div>
           </div>
           <div className="text-xl sm:text-2xl font-extrabold text-amber-700 font-mono tabular-nums">
-            {settings.currencySymbol}{monthlyMetrics.totalVendorPayments.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+            {settings.currencySymbol} {formatCurrencyAmount(monthlyMetrics.totalVendorPayments)}
           </div>
           <span className="text-[10px] text-slate-500 block truncate">
             {monthlyMetrics.vendorPaymentsCount} vendor payment vouchers paid
@@ -388,7 +389,7 @@ export const ExpenseModule: React.FC = () => {
             </div>
           </div>
           <div className="text-xl sm:text-2xl font-extrabold text-rose-600 font-mono tabular-nums">
-            {settings.currencySymbol}{monthlyMetrics.totalOperatingExpenses.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+            {settings.currencySymbol} {formatCurrencyAmount(monthlyMetrics.totalOperatingExpenses)}
           </div>
           <span className="text-[10px] text-slate-500 block truncate">
             Labor, freight, utilities & yard maintenance
@@ -404,7 +405,7 @@ export const ExpenseModule: React.FC = () => {
             </div>
           </div>
           <div className={`text-xl sm:text-2xl font-black font-mono tabular-nums ${monthlyMetrics.netCashFlow >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-            {settings.currencySymbol}{monthlyMetrics.netCashFlow.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+            {settings.currencySymbol} {formatCurrencyAmount(monthlyMetrics.netCashFlow)}
           </div>
           <span className="text-[10px] text-slate-500 block truncate">
             Income minus (Vendor Payments + OpEx)
@@ -534,7 +535,7 @@ export const ExpenseModule: React.FC = () => {
                     <td className="py-3 px-4 max-w-xs truncate text-slate-800 font-medium">{e.description}</td>
                     <td className="py-3 px-4 uppercase text-[10px] font-mono text-slate-500">{e.paidVia}</td>
                     <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 text-sm tabular-nums">
-                      {settings.currencySymbol}{e.amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                      {settings.currencySymbol} {formatCurrencyAmount(e.amount)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <button
@@ -590,7 +591,7 @@ export const ExpenseModule: React.FC = () => {
                     </td>
                     <td className="py-3 px-4 uppercase text-[10px] font-mono text-slate-500">{e.paidVia}</td>
                     <td className="py-3 px-4 text-right font-mono font-extrabold text-amber-700 text-sm tabular-nums">
-                      {settings.currencySymbol}{e.amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                      {settings.currencySymbol} {formatCurrencyAmount(e.amount)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <button
@@ -633,7 +634,7 @@ export const ExpenseModule: React.FC = () => {
             <div className="text-right">
               <span className="text-[10px] uppercase font-bold text-amber-800 block">Total Payable Balance:</span>
               <span className="text-xl font-black text-amber-900 font-mono tabular-nums">
-                {settings.currencySymbol}{totalVendorPayableBalance.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                {settings.currencySymbol} {formatCurrencyAmount(totalVendorPayableBalance)}
               </span>
             </div>
           </div>
@@ -668,7 +669,7 @@ export const ExpenseModule: React.FC = () => {
                       </td>
                       <td className="py-3 px-4 font-mono text-slate-600">{s.paymentTerms || 'Standard'}</td>
                       <td className="py-3 px-4 text-right font-mono font-extrabold text-amber-800 text-sm tabular-nums">
-                        {settings.currencySymbol}{(s.balancePayable || 0).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                        {settings.currencySymbol} {formatCurrencyAmount(s.balancePayable || 0)}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-2">
@@ -748,7 +749,7 @@ export const ExpenseModule: React.FC = () => {
                 >
                   {suppliers.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.companyName} &mdash; Payable: {settings.currencySymbol}{s.balancePayable.toLocaleString()}
+                      {s.companyName} &mdash; Payable: {settings.currencySymbol} {formatCurrencyAmount(s.balancePayable)}
                     </option>
                   ))}
                 </select>
@@ -767,7 +768,7 @@ export const ExpenseModule: React.FC = () => {
                   <div className="text-right">
                     <span className="text-[10px] text-amber-700 uppercase font-bold block">Current Payable:</span>
                     <span className="text-sm font-extrabold text-amber-900 font-mono">
-                      {settings.currencySymbol}{(targetVendorForPayment.balancePayable || 0).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                      {settings.currencySymbol} {formatCurrencyAmount(targetVendorForPayment.balancePayable || 0)}
                     </span>
                   </div>
                 </div>

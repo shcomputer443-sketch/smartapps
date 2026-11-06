@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { usePOS } from '../../context/POSContext';
 import { printDailyReportSafely } from '../../utils/generateInvoicePDF';
+import { formatCurrencyAmount } from '../../utils/currencyAndWords';
 import {
   Calendar,
   TrendingUp,
@@ -244,7 +245,7 @@ export const DailyReportModule: React.FC = () => {
   };
 
   const handleDeleteWithdrawal = async (id: string, amount: number) => {
-    if (window.confirm(`Are you sure you want to cancel and delete this cash withdrawal of ${settings.currencySymbol}${amount.toLocaleString()}? The amount will return to the remaining balance.`)) {
+    if (window.confirm(`Are you sure you want to cancel and delete this cash withdrawal of ${settings.currencySymbol} ${formatCurrencyAmount(amount)}? The amount will return to the remaining balance.`)) {
       await deleteCashWithdrawal(id);
     }
   };
@@ -349,32 +350,31 @@ export const DailyReportModule: React.FC = () => {
           </div>
 
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tabular-nums tracking-tight">
-            {settings.currencySymbol}
-            {dayNetIncome.toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(dayNetIncome)}
           </div>
 
           <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-100 space-y-1.5">
             <div className="flex justify-between">
-              <span>Gross Sales: {settings.currencySymbol}{dayGrossSales.toLocaleString()}</span>
+              <span>Gross Sales: {settings.currencySymbol} {formatCurrencyAmount(dayGrossSales)}</span>
               {dayReturnsTotal > 0 && (
                 <span className="text-rose-600 font-medium">
-                  Returns: -{settings.currencySymbol}{dayReturnsTotal.toLocaleString()}
+                  Returns: -{settings.currencySymbol} {formatCurrencyAmount(dayReturnsTotal)}
                 </span>
               )}
             </div>
             <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
               <div className="p-1.5 rounded-lg bg-emerald-50/80 border border-emerald-200">
                 <span className="text-[10px] text-emerald-800 font-semibold block">Cash Revenue:</span>
-                <span className="font-mono font-bold text-emerald-700 text-xs">{settings.currencySymbol}{dayCashRevenue.toLocaleString()}</span>
+                <span className="font-mono font-bold text-emerald-700 text-xs">{settings.currencySymbol} {formatCurrencyAmount(dayCashRevenue)}</span>
               </div>
               <div className="p-1.5 rounded-lg bg-blue-50/80 border border-blue-200">
                 <span className="text-[10px] text-blue-800 font-semibold block">Bank Transfer:</span>
-                <span className="font-mono font-bold text-blue-700 text-xs">{settings.currencySymbol}{dayBankTransferRevenue.toLocaleString()}</span>
+                <span className="font-mono font-bold text-blue-700 text-xs">{settings.currencySymbol} {formatCurrencyAmount(dayBankTransferRevenue)}</span>
               </div>
             </div>
             {dayMobileRevenue > 0 && (
               <div className="text-[10px] text-purple-700 font-medium">
-                Mobile Banking (bKash/Nagad): {settings.currencySymbol}{dayMobileRevenue.toLocaleString()}
+                Mobile Banking (bKash/Nagad): {settings.currencySymbol} {formatCurrencyAmount(dayMobileRevenue)}
               </div>
             )}
           </div>
@@ -393,8 +393,7 @@ export const DailyReportModule: React.FC = () => {
           </div>
 
           <div className="text-2xl sm:text-3xl font-extrabold text-rose-600 font-mono tabular-nums tracking-tight">
-            {settings.currencySymbol}
-            {dayTotalExpense.toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(dayTotalExpense)}
           </div>
 
           <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-100">
@@ -419,13 +418,12 @@ export const DailyReportModule: React.FC = () => {
           <div className={`text-2xl sm:text-3xl font-extrabold font-mono tabular-nums tracking-tight ${
             dayNetProfit >= 0 ? 'text-[#C49A45]' : 'text-rose-600'
           }`}>
-            {settings.currencySymbol}
-            {dayNetProfit.toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(dayNetProfit)}
           </div>
 
           <div className="text-[11px] text-slate-500 flex justify-between pt-1 border-t border-slate-100">
-            <span>Gross Margin: {settings.currencySymbol}{dayGrossProfit.toLocaleString()}</span>
-            <span>Expenses: -{settings.currencySymbol}{dayTotalExpense.toLocaleString()}</span>
+            <span>Gross Margin: {settings.currencySymbol} {formatCurrencyAmount(dayGrossProfit)}</span>
+            <span>Expenses: -{settings.currencySymbol} {formatCurrencyAmount(dayTotalExpense)}</span>
           </div>
         </div>
       </div>
@@ -435,7 +433,7 @@ export const DailyReportModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-white border border-[#EADBCE] shadow-xs space-y-1">
           <span className="text-xs text-slate-500 font-semibold block">Opening Cash Balance</span>
           <span className="text-xl font-bold text-amber-700 font-mono tabular-nums">
-            {settings.currencySymbol} {openingCashBalance.toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(openingCashBalance)}
           </span>
           <span className="text-[10px] text-slate-400 block">Auto from previous day's remaining balance</span>
         </div>
@@ -443,27 +441,27 @@ export const DailyReportModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-white border border-[#EADBCE] shadow-xs space-y-1">
           <span className="text-xs text-slate-500 font-semibold block">Cash Inflow Today</span>
           <span className="text-xl font-bold text-emerald-700 font-mono tabular-nums">
-            {settings.currencySymbol} {(dayTotalPaidCash + dayDuesCollectedCash).toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(dayTotalPaidCash + dayDuesCollectedCash)}
           </span>
           <span className="text-[10px] text-slate-500 block">
-            Sales: {settings.currencySymbol} {dayTotalPaidCash.toLocaleString()} | Dues: {settings.currencySymbol} {dayDuesCollectedCash.toLocaleString()}
+            Sales: {settings.currencySymbol} {formatCurrencyAmount(dayTotalPaidCash)} | Dues: {settings.currencySymbol} {formatCurrencyAmount(dayDuesCollectedCash)}
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-[#EADBCE] shadow-xs space-y-1">
           <span className="text-xs text-slate-500 font-semibold block">Cash Outflow Today</span>
           <span className="text-xl font-bold text-rose-600 font-mono tabular-nums">
-            {settings.currencySymbol} {(dayCashExpenses + dayCashRefunds).toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(dayCashExpenses + dayCashRefunds)}
           </span>
           <span className="text-[10px] text-slate-500 block">
-            Expenses: {settings.currencySymbol} {dayCashExpenses.toLocaleString()} | Refunds: {settings.currencySymbol} {dayCashRefunds.toLocaleString()}
+            Expenses: {settings.currencySymbol} {formatCurrencyAmount(dayCashExpenses)} | Refunds: {settings.currencySymbol} {formatCurrencyAmount(dayCashRefunds)}
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-[#C49A45]/40 shadow-xs space-y-1 bg-amber-50/20">
           <span className="text-xs text-slate-700 font-bold block">Closing Cash in Hand</span>
           <span className="text-xl font-extrabold text-[#C49A45] font-mono tabular-nums">
-            {settings.currencySymbol} {estimatedClosingCash.toLocaleString()}
+            {settings.currencySymbol} {formatCurrencyAmount(estimatedClosingCash)}
           </span>
           <span className="text-[10px] text-slate-500 block">Opening + Inflows - Outflows</span>
         </div>
@@ -479,7 +477,7 @@ export const DailyReportModule: React.FC = () => {
               <span>Day's Cash Withdrawn</span>
             </div>
             <div className="text-2xl font-black font-mono text-rose-600 tabular-nums">
-              {settings.currencySymbol} {dayTotalCashWithdrawn.toLocaleString()}
+              {settings.currencySymbol} {formatCurrencyAmount(dayTotalCashWithdrawn)}
             </div>
             <div className="text-[11px] text-slate-500">
               {dayCashWithdrawals.length} withdrawal voucher(s) logged today
@@ -498,8 +496,8 @@ export const DailyReportModule: React.FC = () => {
 
         {/* Middle: Math Calculation Arrow */}
         <div className="hidden lg:flex flex-col items-center justify-center px-2 text-center text-xs font-mono font-semibold text-slate-400">
-          <span>Closing ({settings.currencySymbol}{estimatedClosingCash.toLocaleString()})</span>
-          <span className="text-rose-500 font-bold">- Withdrawn ({settings.currencySymbol}{dayTotalCashWithdrawn.toLocaleString()})</span>
+          <span>Closing ({settings.currencySymbol} {formatCurrencyAmount(estimatedClosingCash)})</span>
+          <span className="text-rose-500 font-bold">- Withdrawn ({settings.currencySymbol} {formatCurrencyAmount(dayTotalCashWithdrawn)})</span>
           <span className="text-emerald-700 font-bold">= Remaining Balance</span>
         </div>
 
@@ -511,7 +509,7 @@ export const DailyReportModule: React.FC = () => {
               <span>Remaining Balance in Hand / Safe</span>
             </div>
             <div className="text-2xl sm:text-3xl font-black font-mono text-white tabular-nums tracking-tight">
-              {settings.currencySymbol} {dayRemainingCashBalance.toLocaleString()}
+              {settings.currencySymbol} {formatCurrencyAmount(dayRemainingCashBalance)}
             </div>
             <div className="text-[11px] text-emerald-100/90 font-medium">
               Closing Cash - Cash Withdrawn = Net Remaining in Drawer / Safe
@@ -557,16 +555,16 @@ export const DailyReportModule: React.FC = () => {
                         <span className="font-semibold block text-slate-900 truncate max-w-[120px]">{inv.customerName}</span>
                       </td>
                       <td className="py-2 px-3 text-right font-mono font-bold whitespace-nowrap">
-                        {settings.currencySymbol}{effective.toLocaleString()}
+                        {settings.currencySymbol} {formatCurrencyAmount(effective)}
                         {isReturned && (
                           <span className="text-[10px] text-rose-600 block font-normal">Return Adjusted</span>
                         )}
                       </td>
                       <td className="py-2 px-3 text-right font-mono text-emerald-700 whitespace-nowrap">
-                        {settings.currencySymbol}{inv.totalPaid.toLocaleString()}
+                        {settings.currencySymbol} {formatCurrencyAmount(inv.totalPaid)}
                       </td>
                       <td className="py-2 px-3 text-right font-mono text-rose-600 font-semibold whitespace-nowrap">
-                        {settings.currencySymbol}{inv.dueAmount.toLocaleString()}
+                        {settings.currencySymbol} {formatCurrencyAmount(inv.dueAmount)}
                       </td>
                     </tr>
                   );
@@ -591,7 +589,7 @@ export const DailyReportModule: React.FC = () => {
               <span>Expenses ({dayExpenses.length})</span>
             </h3>
             <span className="text-[11px] text-slate-500 font-mono">
-              Total: {settings.currencySymbol}{dayTotalExpense.toLocaleString()}
+              Total: {settings.currencySymbol} {formatCurrencyAmount(dayTotalExpense)}
             </span>
           </div>
 
@@ -612,7 +610,7 @@ export const DailyReportModule: React.FC = () => {
                     <td className="py-2 px-3 text-slate-600 truncate max-w-[120px]">{exp.description}</td>
                     <td className="py-2 px-3 text-[11px] capitalize text-slate-500">{exp.paidVia}</td>
                     <td className="py-2 px-3 text-right font-mono font-bold text-rose-600 whitespace-nowrap">
-                      {settings.currencySymbol}{exp.amount.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(exp.amount)}
                     </td>
                   </tr>
                 ))}
@@ -659,7 +657,7 @@ export const DailyReportModule: React.FC = () => {
                 {dayCashWithdrawals.map((wth) => (
                   <tr key={wth.id} className="hover:bg-[#FEFAF3]">
                     <td className="py-2 px-3 font-mono font-bold text-rose-600 whitespace-nowrap">
-                      {settings.currencySymbol}{wth.amount.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(wth.amount)}
                     </td>
                     <td className="py-2 px-3">
                       <span className="font-semibold block text-slate-900">{wth.withdrawnBy}</span>
@@ -726,19 +724,19 @@ export const DailyReportModule: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-slate-600 font-medium">Closing Cash in Hand:</span>
               <span className="font-mono font-bold text-slate-900">
-                {settings.currencySymbol} {estimatedClosingCash.toLocaleString()}
+                {settings.currencySymbol} {formatCurrencyAmount(estimatedClosingCash)}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-slate-600 font-medium">Already Withdrawn Today:</span>
               <span className="font-mono font-bold text-rose-600">
-                -{settings.currencySymbol} {dayTotalCashWithdrawn.toLocaleString()}
+                -{settings.currencySymbol} {formatCurrencyAmount(dayTotalCashWithdrawn)}
               </span>
             </div>
             <div className="pt-2 border-t border-amber-200 flex items-center justify-between font-bold">
               <span className="text-slate-800">Available Balance:</span>
               <span className="font-mono text-emerald-700 text-sm">
-                {settings.currencySymbol} {dayRemainingCashBalance.toLocaleString()}
+                {settings.currencySymbol} {formatCurrencyAmount(dayRemainingCashBalance)}
               </span>
             </div>
           </div>
@@ -818,7 +816,7 @@ export const DailyReportModule: React.FC = () => {
               <span className="text-slate-700 font-medium">Remaining Cash after this Withdrawal:</span>
               <span className="font-mono font-black text-emerald-800 text-sm">
                 {settings.currencySymbol}{' '}
-                {Math.max(0, dayRemainingCashBalance - (parseFloat(withdrawAmount) || 0)).toLocaleString()}
+                {formatCurrencyAmount(Math.max(0, dayRemainingCashBalance - (parseFloat(withdrawAmount) || 0)))}
               </span>
             </div>
 

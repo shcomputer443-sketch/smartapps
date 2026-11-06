@@ -28,6 +28,7 @@ import {
 import { INITIAL_USERS } from '../data/initialData';
 import { StorageService } from '../services/storage';
 import { FirebaseSyncService } from '../services/firebaseSync';
+import { formatCurrencyAmount } from '../utils/currencyAndWords';
 import {
   registerUserInFirebaseAuth,
   syncUsersWithFirebaseAuth,
@@ -1572,7 +1573,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const finalExplanation =
       explanation?.trim() ||
       notes?.trim() ||
-      `Due payment received: ${settings.currencySymbol}${Number(amount).toFixed(3)} from ${customer.name} via ${paymentMethod} (Ref: ${reference || 'N/A'})`;
+      `Due payment received: ${settings.currencySymbol} ${formatCurrencyAmount(Number(amount))} from ${customer.name} via ${paymentMethod} (Ref: ${reference || 'N/A'})`;
 
     const newTx: CustomerLedgerTransaction = {
       id: `tx_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -1608,7 +1609,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       'DUE_PAYMENT_COLLECTED',
       'CUSTOMER_LEDGER',
       customerId,
-      `Due payment collected: ${settings.currencySymbol}${amount.toLocaleString()} from ${customer.name}`
+      `Due payment collected: ${settings.currencySymbol} ${formatCurrencyAmount(amount)} from ${customer.name}`
     );
     setAuditLogs(StorageService.getAuditLogs());
     return newTx;
@@ -1640,7 +1641,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const voucherNumber = `VR-${Date.now().toString().slice(-6)}`;
     const finalExplanation =
       explanation?.trim() ||
-      `Refund & Adjustment: ${settings.currencySymbol}${amount.toLocaleString()} (${customer.name})`;
+      `Refund & Adjustment: ${settings.currencySymbol} ${formatCurrencyAmount(amount)} (${customer.name})`;
     const newTx: CustomerLedgerTransaction = {
       id: `tx_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
       customerId,
@@ -1665,7 +1666,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       refundType === 'due_waiver' ? 'DUE_WAIVER_APPROVED' : 'DUE_REFUND_PROCESSED',
       'CUSTOMER_LEDGER',
       customerId,
-      `Processed refund: ${settings.currencySymbol}${amount.toLocaleString()} (${customer.name})`
+      `Processed refund: ${settings.currencySymbol} ${formatCurrencyAmount(amount)} (${customer.name})`
     );
     setAuditLogs(StorageService.getAuditLogs());
     return newTx;
@@ -1777,7 +1778,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       'SETTINGS_CHANGED',
       'SUPPLIER_PAYMENT',
       supplierId,
-      `Paid ${settings.currencySymbol}${amount.toLocaleString()} to ${sup.companyName} via ${paymentMethod}`
+      `Paid ${settings.currencySymbol} ${formatCurrencyAmount(amount)} to ${sup.companyName} via ${paymentMethod}`
     );
     setAuditLogs(StorageService.getAuditLogs());
   };
@@ -1804,7 +1805,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       'SETTINGS_CHANGED',
       'EXPENSE',
       newExp.id,
-      `Recorded expense: ${settings.currencySymbol}${newExp.amount.toLocaleString()} [${newExp.category}]: ${newExp.description}`
+      `Recorded expense: ${settings.currencySymbol} ${formatCurrencyAmount(newExp.amount)} [${newExp.category}]: ${newExp.description}`
     );
     setAuditLogs(StorageService.getAuditLogs());
   };
@@ -2012,7 +2013,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         date: new Date().toISOString(),
         invoiceId: newInvoice.id,
         voucherNumber: newInvoice.id,
-        explanation: `Invoice #${newInvoice.id} total sale ${settings.currencySymbol}${grandTotal.toLocaleString()} (Paid: ${settings.currencySymbol}${sanitizedPaid.toLocaleString()}, Remaining Due: ${settings.currencySymbol}${dueAmount.toLocaleString()})`,
+        explanation: `Invoice #${newInvoice.id} total sale ${settings.currencySymbol} ${formatCurrencyAmount(grandTotal)} (Paid: ${settings.currencySymbol} ${formatCurrencyAmount(sanitizedPaid)}, Remaining Due: ${settings.currencySymbol} ${formatCurrencyAmount(dueAmount)})`,
         processedBy: `${currentUser.name} (${currentRole.name})`,
       };
       StorageService.addCustomerTransaction(saleTx);
@@ -2055,7 +2056,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       'INVOICE_CREATE',
       'INVOICE',
       invoiceId,
-      `Generated Invoice #${invoiceId} for ${settings.currencySymbol}${grandTotal.toLocaleString()} (Paid: ${settings.currencySymbol}${sanitizedPaid.toLocaleString()}, Due: ${settings.currencySymbol}${dueAmount.toLocaleString()})`
+      `Generated Invoice #${invoiceId} for ${settings.currencySymbol} ${formatCurrencyAmount(grandTotal)} (Paid: ${settings.currencySymbol} ${formatCurrencyAmount(sanitizedPaid)}, Due: ${settings.currencySymbol} ${formatCurrencyAmount(dueAmount)})`
     );
     setAuditLogs(StorageService.getAuditLogs());
 
@@ -2165,7 +2166,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           date: new Date().toISOString(),
           invoiceId: invoice.id,
           voucherNumber: `RET-${invoice.id}`,
-          explanation: `Invoice #${invoice.id} material return credited: ${settings.currencySymbol}${totalRefund.toLocaleString()} restored to yard stock`,
+          explanation: `Invoice #${invoice.id} material return credited: ${settings.currencySymbol} ${formatCurrencyAmount(totalRefund)} restored to yard stock`,
           processedBy: `${currentUser.name} (${currentRole.name})`,
         };
         StorageService.addCustomerTransaction(returnTx);
@@ -2180,7 +2181,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       'RETURN_PROCESSED',
       'INVOICE_RETURN',
       invoiceId,
-      `Material return processed for Invoice #${invoiceId}: Refunded ${settings.currencySymbol}${totalRefund.toLocaleString()} and stock restored.`
+      `Material return processed for Invoice #${invoiceId}: Refunded ${settings.currencySymbol} ${formatCurrencyAmount(totalRefund)} and stock restored.`
     );
     setAuditLogs(StorageService.getAuditLogs());
     return true;
@@ -2437,7 +2438,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         'SETTINGS_CHANGED',
         'CASH_WITHDRAWAL',
         newWithdrawal.id,
-        `Cash Withdrawn: ${settings.currencySymbol}${data.amount.toLocaleString()} on ${data.date}. Remaining balance: ${settings.currencySymbol}${remainingAfter.toLocaleString()} by ${data.withdrawnBy}`
+        `Cash Withdrawn: ${settings.currencySymbol} ${formatCurrencyAmount(data.amount)} on ${data.date}. Remaining balance: ${settings.currencySymbol} ${formatCurrencyAmount(remainingAfter)} by ${data.withdrawnBy}`
       );
       setAuditLogs(StorageService.getAuditLogs());
 
@@ -2466,7 +2467,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           'SETTINGS_CHANGED',
           'CASH_WITHDRAWAL',
           id,
-          `Cancelled cash withdrawal of ${settings.currencySymbol}${target.amount.toLocaleString()} for date ${target.date}`
+          `Cancelled cash withdrawal of ${settings.currencySymbol} ${formatCurrencyAmount(target.amount)} for date ${target.date}`
         );
         setAuditLogs(StorageService.getAuditLogs());
       }

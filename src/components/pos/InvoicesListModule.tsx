@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { usePOS } from '../../context/POSContext';
 import { Invoice } from '../../types';
+import { formatCurrencyAmount } from '../../utils/currencyAndWords';
 import {
   Receipt,
   Search,
@@ -187,20 +188,20 @@ export const InvoicesListModule: React.FC = () => {
                       <span className="text-[10px] text-slate-400 font-mono">{inv.customerPhone}</span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-bold text-slate-900 tabular-nums">
-                      {settings.currencySymbol}{effectiveRev.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(effectiveRev)}
                       {totalReturned > 0 && (
                         <span className="text-[10px] text-rose-600 block font-normal">
-                          (-{settings.currencySymbol}{totalReturned.toLocaleString()} Returned)
+                          (-{settings.currencySymbol} {formatCurrencyAmount(totalReturned)} Returned)
                         </span>
                       )}
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-emerald-700 tabular-nums font-semibold">
-                      {settings.currencySymbol}{inv.totalPaid.toLocaleString()}
+                      {settings.currencySymbol} {formatCurrencyAmount(inv.totalPaid)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono tabular-nums">
                       {inv.dueAmount > 0 ? (
                         <span className="text-rose-600 font-bold">
-                          {settings.currencySymbol}{inv.dueAmount.toLocaleString()}
+                          {settings.currencySymbol} {formatCurrencyAmount(inv.dueAmount)}
                         </span>
                       ) : (
                         <span className="text-emerald-700 font-bold text-xs">PAID</span>
@@ -299,7 +300,7 @@ export const InvoicesListModule: React.FC = () => {
                       <div>
                         <span className="font-bold text-slate-900 block">{it.productName}</span>
                         <span className="text-[11px] text-slate-500">
-                          Sold Qty: {it.quantity} {it.unit} @ {settings.currencySymbol}{it.unitPrice}
+                          Sold Qty: {it.quantity} {it.unit} @ {settings.currencySymbol} {formatCurrencyAmount(it.unitPrice)}
                         </span>
                       </div>
                       <span className="font-bold text-slate-700 font-mono text-xs">

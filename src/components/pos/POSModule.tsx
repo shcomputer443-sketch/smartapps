@@ -603,14 +603,13 @@ export const POSModule: React.FC = () => {
 
                         {/* MRP Column */}
                         <td className="py-1.5 px-2.5 border-r border-slate-300/60 text-right font-mono font-extrabold text-sm whitespace-nowrap">
-                          {settings.currencySymbol}
-                          {Number(prod.regularPrice).toFixed(3)}
+                          {settings.currencySymbol} {formatCurrencyAmount(prod.regularPrice)}
                         </td>
 
                         {/* Min Tk Column */}
                         <td className="py-1.5 px-2.5 border-r border-slate-300/60 text-right font-mono whitespace-nowrap">
                           <span className={isSelected ? 'text-blue-100 font-bold' : 'text-slate-700 font-bold'}>
-                            {settings.currencySymbol}{Number(prod.minSellingPrice).toFixed(3)}
+                            {settings.currencySymbol} {formatCurrencyAmount(prod.minSellingPrice)}
                           </span>
                         </td>
 
@@ -1679,7 +1678,7 @@ export const POSModule: React.FC = () => {
                                 {cleanItemName(it.product.name)}
                               </span>
                               <span className="font-mono text-slate-700 whitespace-nowrap">
-                                {it.quantity} &times; {settings.currencySymbol}{it.unitPrice.toFixed(3)}
+                                {it.quantity} &times; {settings.currencySymbol}{formatCurrencyAmount(it.unitPrice)}
                               </span>
                             </div>
                           ))}

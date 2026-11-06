@@ -227,8 +227,8 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({ invoice, o
                         <span className="text-[10px] text-slate-400 font-mono">{it.sku}</span>
                       </td>
                       <td className="py-2.5 px-3 text-right font-medium whitespace-nowrap">{it.quantity} {it.unit}</td>
-                      <td className="py-2.5 px-3 text-right font-mono whitespace-nowrap">{settings.currencySymbol} {it.unitPrice.toLocaleString()}</td>
-                      <td className="py-2.5 px-3 text-right font-mono font-bold whitespace-nowrap">{settings.currencySymbol} {it.total.toLocaleString()}</td>
+                      <td className="py-2.5 px-3 text-right font-mono whitespace-nowrap">{settings.currencySymbol} {formatCurrencyAmount(it.unitPrice)}</td>
+                      <td className="py-2.5 px-3 text-right font-mono font-bold whitespace-nowrap">{settings.currencySymbol} {formatCurrencyAmount(it.total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -278,7 +278,7 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({ invoice, o
                   <div className={`flex justify-between items-center font-bold ${invoice.dueAmount > 0 ? 'text-rose-600' : 'text-emerald-700'}`}>
                     <span className="shrink-0 pr-3">Remaining Due:</span>
                     <span className="font-mono whitespace-nowrap tabular-nums text-right">
-                      {invoice.dueAmount > 0 ? `${settings.currencySymbol} ${formatCurrencyAmount(invoice.dueAmount)}` : `${settings.currencySymbol} 0.000`}
+                      {invoice.dueAmount > 0 ? `${settings.currencySymbol} ${formatCurrencyAmount(invoice.dueAmount)}` : `${settings.currencySymbol} 0.00`}
                     </span>
                   </div>
                 </div>
@@ -328,7 +328,7 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({ invoice, o
                       <div>{cleanItemName(it.productName)}</div>
                       <div className="text-[9px] text-gray-600">{it.quantity} {it.unit} x {it.unitPrice}</div>
                     </div>
-                    <span className="font-bold">{it.total}</span>
+                    <span className="font-bold">{formatCurrencyAmount(it.total)}</span>
                   </div>
                 ))}
               </div>
@@ -336,15 +336,15 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({ invoice, o
               <div className="py-1 border-b border-black border-dashed space-y-0.5 text-right">
                 <div className="flex justify-between items-center">
                   <span className="shrink-0 pr-2">Grand Total:</span>
-                  <span className="font-bold whitespace-nowrap tabular-nums text-right">{settings.currencySymbol} {effectiveTotal.toLocaleString()}</span>
+                  <span className="font-bold whitespace-nowrap tabular-nums text-right">{settings.currencySymbol} {formatCurrencyAmount(effectiveTotal)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="shrink-0 pr-2">Amount Paid:</span>
-                  <span className="whitespace-nowrap tabular-nums text-right">{settings.currencySymbol} {invoice.totalPaid.toLocaleString()}</span>
+                  <span className="whitespace-nowrap tabular-nums text-right">{settings.currencySymbol} {formatCurrencyAmount(invoice.totalPaid)}</span>
                 </div>
                 <div className="flex justify-between items-center font-bold">
                   <span className="shrink-0 pr-2">Remaining Due:</span>
-                  <span className="whitespace-nowrap tabular-nums text-right">{invoice.dueAmount > 0 ? `${settings.currencySymbol} ${invoice.dueAmount.toLocaleString()}` : `${settings.currencySymbol} 0`}</span>
+                  <span className="whitespace-nowrap tabular-nums text-right">{invoice.dueAmount > 0 ? `${settings.currencySymbol} ${formatCurrencyAmount(invoice.dueAmount)}` : `${settings.currencySymbol} 0.00`}</span>
                 </div>
                 <div className="flex justify-between items-center font-bold pt-0.5">
                   <span className="shrink-0 pr-2">Status:</span>

@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { CustomerLedgerTransaction, CompanySettings } from '../../types';
+import { formatCurrencyAmount } from '../../utils/currencyAndWords';
 import {
   Printer,
   X,
@@ -94,19 +95,19 @@ export const DueVoucherPrintModal: React.FC<DueVoucherPrintModalProps> = ({
             <div className="flex justify-between items-center text-slate-600">
               <span>Previous Due Balance:</span>
               <span className="font-mono tabular-nums">
-                {settings.currencySymbol}{voucher.balanceBefore.toLocaleString()}
+                {settings.currencySymbol} {formatCurrencyAmount(voucher.balanceBefore)}
               </span>
             </div>
             <div className="flex justify-between items-center text-sm font-bold pt-2 border-t border-slate-100 text-emerald-700">
               <span>{isRefund ? 'Refund / Adjustment Amount:' : 'Amount Received:'}</span>
               <span className="font-mono text-base tabular-nums">
-                {settings.currencySymbol}{voucher.amount.toLocaleString()}
+                {settings.currencySymbol} {formatCurrencyAmount(voucher.amount)}
               </span>
             </div>
             <div className="flex justify-between items-center text-xs font-bold pt-2 border-t border-slate-100 text-slate-900">
               <span>Remaining Due Balance:</span>
               <span className="font-mono text-sm tabular-nums text-rose-600">
-                {settings.currencySymbol}{voucher.balanceAfter.toLocaleString()}
+                {settings.currencySymbol} {formatCurrencyAmount(voucher.balanceAfter)}
               </span>
             </div>
           </div>
